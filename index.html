@@ -1,1 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECHO EFOOTBALL Web App</title>
+    <style>
+        /* Removes default browser margins and scrollbars */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: #0f0f14; /* Dark background so the loader doesn't flash white */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        /* ---- Loading screen ---- */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #0f0f14;
+            z-index: 10;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.15);
+            border-top-color: #4f8cff;
+            border-radius: 50%;
+            animation: spin 0.9s linear infinite;
+        }
+        .loader-text {
+            margin-top: 16px;
+            color: #cfd3dc;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            animation: pulse 1.6s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* ---- Iframe fade-in ---- */
+        iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
+            display: block;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        iframe.loaded {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="loader-text">Loading ECHO EFOOTBALL…</div>
+    </div>
+
+    <iframe
+        id="app-frame"
+        src="https://script.google.com/macros/s/AKfycbx-oVCygjBndmCORC4Ditx5x2wQibhlEy7bjOWE85c7hHeXhvyiJwK7kh6Pz1GmpVyG/exec"
+        allowfullscreen
+        loading="eager">
+    </iframe>
+
+    <script>
+        const frame = document.getElementById('app-frame');
+        const loader = document.getElementById('loader');
+
+        // Fallback: hide loader after a max wait even if 'load' fires late
+        // (cross-origin iframes still fire 'load', but this is a safety net)
+        const safetyTimeout = setTimeout(() => {
+            reveal();
+        }, 6000);
+
+        frame.addEventListener('load', reveal);
+
+        function reveal() {
+            clearTimeout(safetyTimeout);
+            frame.classList.add('loaded');
+            loader.classList.add('hidden');
+        }
+    </script>
+
+</body>
+</html>
 
